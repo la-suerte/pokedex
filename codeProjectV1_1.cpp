@@ -32,8 +32,7 @@ protected:
     int degatsAttaque;
     std::map<std::string, float> tableEfficacite;
     
-    int numPokedex; 
-
+    int numPokedex;
 
 public:
     Pokemon(const std::string& nom, const std::vector<std::string>& types, 
@@ -154,9 +153,7 @@ public:
             ss << types[i];
             if (i < types.size() - 1) ss << ", ";
         }
-        ss << " | HP: " << hp << "/" << hpMax 
-           << " | Attaque: " << nomAttaque << " (" << degatsAttaque << " dégâts)";
-           //<< " | NumPokedex: "<<numPokedex;
+        ss << " | Attaque: " << nomAttaque << " (" << degatsAttaque << " dégâts)";
         return ss.str();
     }
 
@@ -198,6 +195,30 @@ public:
         return "Le Pokémon " + nom + " fait pousser une petite fleur près de vous!";
     }
 };
+
+void afficheHp(int hp, int hpMax)
+{
+    cout<<"   |";
+    for(int i = 0 ; i < hpMax ; i++)
+    {
+        cout<<"-";
+    }
+    cout<<"|\nHP |";
+    for(int i = 0 ; i < hpMax ; i++)
+    {
+        if(i<hp)
+            cout<<"|";
+        else 
+            cout<<" ";
+    }
+    cout<<"|\n   |";
+    for(int i = 0 ; i < hpMax ; i++)
+    {
+        cout<<"-";
+    }
+    cout<<"|"<<endl;
+
+}
 
 // Classe Entraîneur de base
 class Entraineur : public Interagir {
@@ -256,6 +277,7 @@ public:
         std::cout << "Équipe de " << nom << ":" << std::endl;
         for (size_t i = 0; i < equipe.size(); ++i) {
             std::cout << i + 1 << ". " << equipe[i]->afficherInfos() << std::endl;
+            afficheHp(equipe[i]->getHp(),equipe[i]->getHpMax());
             print_pokemon(equipe[i]->getNumPokedex());
         }
 
@@ -316,7 +338,7 @@ private:
 
 public:
     LeaderGym(const std::string& n, const std::string& g)
-        : Entraineur(n), gymnase(g), badge("badge de arene de " + g) {}
+        : Entraineur(n), gymnase(g), badge("Badge de  " + g) {}
 
 
     const std::string& getBadge() const { return badge; }
@@ -618,7 +640,9 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
         return;
     }
     //debugAfficherEquipeHP(adversaire);
-    
+
+    string inutile; //HERE
+
     // Déclarer pokemonJoueur et pokemonAdversaire
     std::shared_ptr<Pokemon> pokemonJoueur = joueur->getPremierPokemonVivant();
     std::shared_ptr<Pokemon> pokemonAdversaire = adversaire->getPremierPokemonVivant();
@@ -637,8 +661,11 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
         std::cout << "    #     ####   ####  #    #    #####  ######     ####   ####  #    # #####  #    #   #   \n\n";        
            
         
-        std::cout << pokemonJoueur->getNom() << " (HP: " << pokemonJoueur->getHp() << "/" << pokemonJoueur->getHpMax();
+        std::cout << pokemonJoueur->getNom()<<endl;
+        afficheHp(pokemonJoueur->getHp(),pokemonJoueur->getHpMax());
         print_pokemon(pokemonJoueur->getNumPokedex());
+
+
         std::cout << "\n\n #     #  #####  \n";
         std::cout << " #     # #     # \n";
         std::cout << " #     # #       \n";
@@ -647,12 +674,15 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
         std::cout << "   # #   #     # \n";
         std::cout << "    #     #####  \n";
         std::cout << "                 \n";
-        std::cout << pokemonAdversaire->getNom() << " (HP: " << pokemonAdversaire->getHp() << "/" << pokemonAdversaire->getHpMax() << ")" << std::endl;
+        std::cout << pokemonAdversaire->getNom()<<endl;
+        afficheHp(pokemonAdversaire->getHp(),pokemonAdversaire->getHpMax());
         print_pokemon(pokemonAdversaire->getNumPokedex());
+
+
         // Le joueur attaque en premier
         pokemonJoueur->attaquer(*pokemonAdversaire);
         
-        debugAfficherEquipeHP(adversaire);
+        //debugAfficherEquipeHP(adversaire);
         // Vérifier si le Pokémon adversaire est KO
         if (!pokemonAdversaire->estVivant()) {
             std::cout << pokemonAdversaire->getNom() << " est KO!" << std::endl;
@@ -667,10 +697,10 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
                 break;
             }
         }
+        std::cout << "\n PRESS N + ENTER TO CONTINUE \n";
+        cin>>inutile; // Waits for Enter after a key press
         
-        // L'adversaire attaque seulement si son Pokémon est vivant
         if (pokemonAdversaire->estVivant()) {
-            // Utilisation de dynamic_cast au lieu de dynamic_pointer_cast
             MaitrePokemon* maitre = dynamic_cast<MaitrePokemon*>(adversaire.get());
             if (maitre) {
                 maitre->attaquer(*pokemonJoueur, *pokemonAdversaire);
@@ -690,6 +720,8 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
                 }
             }
         }
+        std::cout << "\n PRESS N + ENTER TO CONTINUE \n";
+        cin>>inutile; // Waits for Enter after a key press
     }
     
     // Déterminer le vainqueur
@@ -717,6 +749,9 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
         std::cout << adversaire->getNom() << " a gagné le combat!" << std::endl;
         joueur->incrementerCombatsPerdus();
     }
+    std::cout << "\n PRESS N + ENTER TO CONTINUE \n";
+    cin>>inutile; // Waits for Enter after a key press
+
 }
 // Fonction qui gère le menu principal
 void menuPrincipal(std::shared_ptr<Joueur> joueur, 
@@ -728,7 +763,7 @@ void menuPrincipal(std::shared_ptr<Joueur> joueur,
     bool quitter = false;
     
     while (!quitter) {
-        //system("clear");
+        system("clear");
         std::cout << "\n===== MENU PRINCIPAL =====" << std::endl;
         std::cout << "1. Afficher mes Pokémon" << std::endl;
         std::cout << "2. Récupérer les points de vie de mes Pokémon" << std::endl;
@@ -922,7 +957,6 @@ int main() {
     
     std::shared_ptr<Joueur> joueur(new Joueur(nomJoueur));
     
-    // Sélection des Pokémon initiaux
     std::cout << "\nChoisissez vos Pokémon de départ:" << std::endl;
     std::cout << "Pokémon disponibles:" << std::endl;
     
