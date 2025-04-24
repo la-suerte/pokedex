@@ -17,26 +17,26 @@ using namespace std;
 // Interface pour les entités pouvant être interagies
 class Interagir {
 public:
-    virtual std::string interagir() const = 0;
+    virtual string interagir() const = 0;
     virtual ~Interagir() {}  // Virtual destructor with implementation
 };
 
 // Classe de base pour les Pokémon
 class Pokemon : public Interagir {
 protected:
-    std::string nom;
-    std::vector<std::string> types;
+    string nom;
+    vector<string> types;
     int hp;
     int hpMax;
-    std::string nomAttaque;
+    string nomAttaque;
     int degatsAttaque;
-    std::map<std::string, float> tableEfficacite;
+    map<string, float> tableEfficacite;
     
     int numPokedex;
 
 public:
-    Pokemon(const std::string& nom, const std::vector<std::string>& types, 
-            int hp, const std::string& nomAttaque, int degatsAttaque, int numPokedex)
+    Pokemon(const string& nom, const vector<string>& types, 
+            int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
         : nom(nom), types(types), hp(hp), hpMax(hp), nomAttaque(nomAttaque), degatsAttaque(degatsAttaque), numPokedex(numPokedex) {
         initTableEfficacite();
     }
@@ -45,7 +45,7 @@ public:
 
     virtual void initTableEfficacite() {
         // Par défaut, tous les types ont une efficacité normale (x1)
-        std::vector<std::string> allTypes;
+        vector<string> allTypes;
         allTypes.push_back("Feu");
         allTypes.push_back("Eau");
         allTypes.push_back("Plante");
@@ -69,11 +69,11 @@ public:
         }
     }
 
-    const std::string& getNom() const { return nom; }
-    const std::vector<std::string>& getTypes() const { return types; }
+    const string& getNom() const { return nom; }
+    const vector<string>& getTypes() const { return types; }
     int getHp() const { return hp; }
     int getHpMax() const { return hpMax; }
-    const std::string& getNomAttaque() const { return nomAttaque; }
+    const string& getNomAttaque() const { return nomAttaque; }
     int getDegatsAttaque() const { return degatsAttaque; }
     int getNumPokedex() const { return numPokedex; }
 
@@ -87,15 +87,15 @@ public:
 
     bool estVivant() const { return hp > 0; }
 
-    virtual std::string getTypeAttaque() const {
+    virtual string getTypeAttaque() const {
         return !types.empty() ? types[0] : "Normal";
     }
 
-    float getMultiplicateurEfficacite(const std::string& typeAttaque) const {
+    float getMultiplicateurEfficacite(const string& typeAttaque) const {
         float multiplicateur = 1.0f;
         
         for (size_t i = 0; i < types.size(); ++i) {
-            const std::string& type = types[i];
+            const string& type = types[i];
             if (type == "Feu") {
                 if (typeAttaque == "Eau" || typeAttaque == "Roche" || typeAttaque == "Sol") multiplicateur *= 2.0f;
                 if (typeAttaque == "Plante" || typeAttaque == "Glace" || typeAttaque == "Insecte" || 
@@ -127,27 +127,27 @@ public:
     }
 
     virtual int attaquer(Pokemon& cible) {
-        std::string typeAttaque = getTypeAttaque();
+        string typeAttaque = getTypeAttaque();
         float multiplicateur = cible.getMultiplicateurEfficacite(typeAttaque);
         int degatsFinaux = static_cast<int>(degatsAttaque * multiplicateur);
         cible.setHp(cible.getHp() - degatsFinaux);
 
-        std::cout << nom << " utilise " << nomAttaque << " sur " << cible.getNom() << "! ";
+        cout << nom << " utilise " << nomAttaque << " sur " << cible.getNom() << "! ";
         
         if (multiplicateur > 1.0f) {
-            std::cout << "C'est super efficace! ";
+            cout << "C'est super efficace! ";
         } else if (multiplicateur < 1.0f) {
-            std::cout << "Ce n'est pas très efficace... ";
+            cout << "Ce n'est pas très efficace... ";
         }
         
-        std::cout << "Il inflige " << degatsFinaux << " dégâts." << std::endl;
-        std::cout << cible.getNom() << " a maintenant " << cible.getHp() << "/" << cible.getHpMax() << " HP." << std::endl;
+        cout << "Il inflige " << degatsFinaux << " dégâts." << endl;
+        cout << cible.getNom() << " a maintenant " << cible.getHp() << "/" << cible.getHpMax() << " HP." << endl;
         
         return degatsFinaux;
     }
 
-    std::string afficherInfos() const {
-        std::stringstream ss;
+    string afficherInfos() const {
+        stringstream ss;
         ss << "Nom: " << nom << " | Types: ";
         for (size_t i = 0; i < types.size(); ++i) {
             ss << types[i];
@@ -157,7 +157,7 @@ public:
         return ss.str();
     }
 
-    virtual std::string interagir() const {
+    virtual string interagir() const {
         return "Le Pokémon " + nom + " semble heureux de vous voir!";
     }
 };
@@ -165,33 +165,33 @@ public:
 // Classes dérivées pour chaque type de Pokémon
 class PokemonFeu : public Pokemon {
 public:
-    PokemonFeu(const std::string& nom, const std::vector<std::string>& types, 
-               int hp, const std::string& nomAttaque, int degatsAttaque, int numPokedex)
+    PokemonFeu(const string& nom, const vector<string>& types, 
+               int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
         : Pokemon(nom, types, hp, nomAttaque, degatsAttaque, numPokedex) {}
 
-    virtual std::string interagir() const {
+    virtual string interagir() const {
         return "Le Pokémon " + nom + " crache quelques flammes joyeusement!";
     }
 };
 
 class PokemonEau : public Pokemon {
 public:
-    PokemonEau(const std::string& nom, const std::vector<std::string>& types, 
-               int hp, const std::string& nomAttaque, int degatsAttaque, int numPokedex)
+    PokemonEau(const string& nom, const vector<string>& types, 
+               int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
         : Pokemon(nom, types, hp, nomAttaque, degatsAttaque, numPokedex) {}
 
-    virtual std::string interagir() const {
+    virtual string interagir() const {
         return "Le Pokémon " + nom + " fait des bulles et vous éclabousse!";
     }
 };
 
 class PokemonPlante : public Pokemon {
 public:
-    PokemonPlante(const std::string& nom, const std::vector<std::string>& types, 
-                 int hp, const std::string& nomAttaque, int degatsAttaque, int numPokedex)
+    PokemonPlante(const string& nom, const vector<string>& types, 
+                 int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
         : Pokemon(nom, types, hp, nomAttaque, degatsAttaque, numPokedex) {}
 
-    virtual std::string interagir() const {
+    virtual string interagir() const {
         return "Le Pokémon " + nom + " fait pousser une petite fleur près de vous!";
     }
 };
@@ -223,34 +223,34 @@ void afficheHp(int hp, int hpMax)
 // Classe Entraîneur de base
 class Entraineur : public Interagir {
 protected:
-    std::string nom;
-    std::vector<std::shared_ptr<Pokemon> > equipe;
+    string nom;
+    vector<shared_ptr<Pokemon> > equipe;
     bool vaincu;
 
 public:
-    Entraineur(const std::string& nom) : nom(nom), vaincu(false) {}
+    Entraineur(const string& nom) : nom(nom), vaincu(false) {}
     virtual ~Entraineur() {}  // Virtual destructor with implementation
 
-    const std::string& getNom() const { return nom; }
-    const std::vector<std::shared_ptr<Pokemon> >& getEquipe() const { return equipe; }
+    const string& getNom() const { return nom; }
+    const vector<shared_ptr<Pokemon> >& getEquipe() const { return equipe; }
     bool estVaincu() const { return vaincu; }
     void setVaincu(bool estVaincu) { vaincu = estVaincu; }
 
-    void ajouterPokemon(std::shared_ptr<Pokemon> pokemon) {
+    void ajouterPokemon(shared_ptr<Pokemon> pokemon) {
         if (equipe.size() < 6) {
             equipe.push_back(pokemon);
         } else {
-            std::cout << "L'équipe est déjà pleine (maximum 6 Pokémon)." << std::endl;
+            cout << "L'équipe est déjà pleine (maximum 6 Pokémon)." << endl;
         }
     }
 
     void changerOrdrePokemon(int index1, int index2) {
         if (index1 >= 0 && index1 < static_cast<int>(equipe.size()) &&
             index2 >= 0 && index2 < static_cast<int>(equipe.size())) {
-            std::swap(equipe[index1], equipe[index2]);
-            std::cout << "L'ordre des Pokémon a été changé." << std::endl;
+            swap(equipe[index1], equipe[index2]);
+            cout << "L'ordre des Pokémon a été changé." << endl;
         } else {
-            std::cout << "Indices invalides." << std::endl;
+            cout << "Indices invalides." << endl;
         }
     }
 
@@ -263,20 +263,20 @@ public:
         return true;
     }
 
-    std::shared_ptr<Pokemon> getPremierPokemonVivant() const {
+    shared_ptr<Pokemon> getPremierPokemonVivant() const {
         for (size_t i = 0; i < equipe.size(); ++i) {
             if (equipe[i]->estVivant()) {
                 return equipe[i];
             }
         }
-        return std::shared_ptr<Pokemon>();  // Return null pointer
+        return shared_ptr<Pokemon>();  // Return null pointer
     }
     
 
     void afficherEquipe() const {
-        std::cout << "Équipe de " << nom << ":" << std::endl;
+        cout << "Équipe de " << nom << ":" << endl;
         for (size_t i = 0; i < equipe.size(); ++i) {
-            std::cout << i + 1 << ". " << equipe[i]->afficherInfos() << std::endl;
+            cout << i + 1 << ". " << equipe[i]->afficherInfos() << endl;
             afficheHp(equipe[i]->getHp(),equipe[i]->getHpMax());
             print_pokemon(equipe[i]->getNumPokedex());
         }
@@ -287,10 +287,10 @@ public:
         for (size_t i = 0; i < equipe.size(); ++i) {
             equipe[i]->recupererVie();
         }
-        std::cout << "Tous les Pokémon de " << nom << " ont récupéré leurs points de vie!" << std::endl;
+        cout << "Tous les Pokémon de " << nom << " ont récupéré leurs points de vie!" << endl;
     }
 
-    virtual std::string interagir() const {
+    virtual string interagir() const {
         if (vaincu) {
             return nom + " dit: \"Tu m'as battu équitablement. Continue à t'entraîner pour devenir encore plus fort!\"";
         } else {
@@ -307,7 +307,7 @@ private:
     int combatsPerdus;
 
 public:
-    Joueur(const std::string& nom) 
+    Joueur(const string& nom) 
         : Entraineur(nom), badges(0), combatsGagnes(0), combatsPerdus(0) {}
 
     int getBadges() const { return badges; }
@@ -319,13 +319,13 @@ public:
     void incrementerCombatsPerdus() { combatsPerdus++; }
 
     void afficherStatistiques() const {
-        std::cout << "Statistiques de " << nom << ":" << std::endl;
-        std::cout << "Badges: " << badges << std::endl;
-        std::cout << "Combats gagnés: " << combatsGagnes << std::endl;
-        std::cout << "Combats perdus: " << combatsPerdus << std::endl;
+        cout << "Statistiques de " << nom << ":" << endl;
+        cout << "Badges: " << badges << endl;
+        cout << "Combats gagnés: " << combatsGagnes << endl;
+        cout << "Combats perdus: " << combatsPerdus << endl;
     }
 
-    virtual std::string interagir() const {
+    virtual string interagir() const {
         return nom + " dit: \"Je m'entraîne dur pour devenir le meilleur dresseur!\"";
     }
 };
@@ -333,18 +333,18 @@ public:
 // Classe Leader de Gymnase
 class LeaderGym : public Entraineur {
 private:
-    std::string badge;
-    std::string gymnase;
+    string badge;
+    string gymnase;
 
 public:
-    LeaderGym(const std::string& n, const std::string& g)
+    LeaderGym(const string& n, const string& g)
         : Entraineur(n), gymnase(g), badge("Badge de  " + g) {}
 
 
-    const std::string& getBadge() const { return badge; }
-    const std::string& getGymnase() const { return gymnase; }
+    const string& getBadge() const { return badge; }
+    const string& getGymnase() const { return gymnase; }
 
-    virtual std::string interagir() const {
+    virtual string interagir() const {
         if (vaincu) {
             return nom + " dit: \"Tu as gagné le badge " + badge + "! Tu as beaucoup de talent.\"";
         } else {
@@ -356,31 +356,31 @@ public:
 // Classe Maître Pokémon
 class MaitrePokemon : public Entraineur {
 public:
-    MaitrePokemon(const std::string& nom) : Entraineur(nom) {}
+    MaitrePokemon(const string& nom) : Entraineur(nom) {}
 
     int attaquer(Pokemon& cible, Pokemon& attaquant) {
         float bonusMaitre = 1.25f; // Bonus de 25% pour les Maîtres Pokémon
-        std::string typeAttaque = attaquant.getTypeAttaque();
+        string typeAttaque = attaquant.getTypeAttaque();
         float multiplicateur = cible.getMultiplicateurEfficacite(typeAttaque);
         int degatsFinaux = static_cast<int>(attaquant.getDegatsAttaque() * multiplicateur * bonusMaitre);
         cible.setHp(cible.getHp() - degatsFinaux);
 
-        std::cout << attaquant.getNom() << " du Maître " << nom << " utilise " << attaquant.getNomAttaque() 
+        cout << attaquant.getNom() << " du Maître " << nom << " utilise " << attaquant.getNomAttaque() 
                   << " avec un bonus de puissance! ";
         
         if (multiplicateur > 1.0f) {
-            std::cout << "C'est super efficace! ";
+            cout << "C'est super efficace! ";
         } else if (multiplicateur < 1.0f) {
-            std::cout << "Ce n'est pas très efficace... ";
+            cout << "Ce n'est pas très efficace... ";
         }
         
-        std::cout << "Il inflige " << degatsFinaux << " dégâts." << std::endl;
-        std::cout << cible.getNom() << " a maintenant " << cible.getHp() << "/" << cible.getHpMax() << " HP." << std::endl;
+        cout << "Il inflige " << degatsFinaux << " dégâts." << endl;
+        cout << cible.getNom() << " a maintenant " << cible.getHp() << "/" << cible.getHpMax() << " HP." << endl;
         
         return degatsFinaux;
     }
 
-    virtual std::string interagir() const {
+    virtual string interagir() const {
         if (vaincu) {
             return nom + " dit: \"Impressionnant! Tu es vraiment un dresseur exceptionnel.\"";
         } else {
@@ -389,7 +389,7 @@ public:
     }
 };
 
-// Remplacer std::random_device et distributions par alternatives pre-C++11
+// Remplacer random_device et distributions par alternatives pre-C++11
 // Cette fonction simple retourne un nombre aléatoire entre min et max
 int getRandomNumber(int min, int max) {
     static bool initialized = false;
@@ -401,68 +401,68 @@ int getRandomNumber(int min, int max) {
 }
 
 // Fonction pour charger les Pokémon à partir d'un fichier CSV
-std::vector<std::shared_ptr<Pokemon> > chargerPokemonDepuisCSV(const std::string& filename) {
-    std::vector<std::shared_ptr<Pokemon> > pokemons;
-    std::ifstream file(filename.c_str());  // C-style string for older compilers
+vector<shared_ptr<Pokemon> > chargerPokemonDepuisCSV(const string& filename) {
+    vector<shared_ptr<Pokemon> > pokemons;
+    ifstream file(filename.c_str());  // C-style string for older compilers
     
     if (!file.is_open()) {
-        std::cout << "Impossible d'ouvrir le fichier " << filename << std::endl;
+        cout << "Impossible d'ouvrir le fichier " << filename << endl;
         // Créer quelques Pokémon par défaut
-        std::vector<std::string> typeFeu;
+        vector<string> typeFeu;
         typeFeu.push_back("Feu");
-        pokemons.push_back(std::make_shared<PokemonFeu>("Salamèche", typeFeu, 39, "Flammèche", 70,2));
+        pokemons.push_back(make_shared<PokemonFeu>("Salamèche", typeFeu, 39, "Flammèche", 70,2));
         
-        std::vector<std::string> typeEau;
+        vector<string> typeEau;
         typeEau.push_back("Eau");
-        pokemons.push_back(std::make_shared<PokemonEau>("Carapuce", typeEau, 44, "Pistolet à O", 65,6));
+        pokemons.push_back(make_shared<PokemonEau>("Carapuce", typeEau, 44, "Pistolet à O", 65,6));
         
-        std::vector<std::string> typePlante;
+        vector<string> typePlante;
         typePlante.push_back("Plante");
         typePlante.push_back("Poison");
-        pokemons.push_back(std::make_shared<PokemonPlante>("Bulbizarre", typePlante, 45, "Fouet Lianes", 60,7));
+        pokemons.push_back(make_shared<PokemonPlante>("Bulbizarre", typePlante, 45, "Fouet Lianes", 60,7));
         return pokemons;
     }
     
-    std::string line;
+    string line;
     // Ignorer la première ligne (en-têtes)
-    std::getline(file, line);
+    getline(file, line);
 
     int count = 1;
 
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-        std::string nom, typesStr, type2, hpStr, nomAttaque, degatsAttaqueStr, numPokedex;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string nom, typesStr, type2, hpStr, nomAttaque, degatsAttaqueStr, numPokedex;
         
-        std::getline(ss, nom, ',');
-        std::getline(ss, typesStr, ',');
-        std::getline(ss, type2, ',');
-        std::getline(ss, hpStr, ',');
-        std::getline(ss, nomAttaque, ',');
-        std::getline(ss, degatsAttaqueStr, ',');
+        getline(ss, nom, ',');
+        getline(ss, typesStr, ',');
+        getline(ss, type2, ',');
+        getline(ss, hpStr, ',');
+        getline(ss, nomAttaque, ',');
+        getline(ss, degatsAttaqueStr, ',');
         int numPokedexInt = count;
         
         // Convertir les types en vector
-        std::vector<std::string> types;
-        std::stringstream typesStream(typesStr);
-        std::string type;
-        while (std::getline(typesStream, type, '|')) {
+        vector<string> types;
+        stringstream typesStream(typesStr);
+        string type;
+        while (getline(typesStream, type, '|')) {
             types.push_back(type);
         }
         
-        int hp = std::atoi(hpStr.c_str());
-        int degatsAttaque = std::atoi(degatsAttaqueStr.c_str());
+        int hp = atoi(hpStr.c_str());
+        int degatsAttaque = atoi(degatsAttaqueStr.c_str());
         
         // Créer le Pokémon approprié basé sur son type principal
         if (!types.empty()) {
             if (types[0] == "Feu") {
-                pokemons.push_back(std::make_shared<PokemonFeu>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
+                pokemons.push_back(make_shared<PokemonFeu>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
             } else if (types[0] == "Eau") {
-                pokemons.push_back(std::make_shared<PokemonEau>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
+                pokemons.push_back(make_shared<PokemonEau>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
             } else if (types[0] == "Plante") {
-                pokemons.push_back(std::make_shared<PokemonPlante>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
+                pokemons.push_back(make_shared<PokemonPlante>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
             } else {
                 // Type générique
-                pokemons.push_back(std::make_shared<Pokemon>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
+                pokemons.push_back(make_shared<Pokemon>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
             }
             count+=1;
         }
@@ -473,29 +473,29 @@ std::vector<std::shared_ptr<Pokemon> > chargerPokemonDepuisCSV(const std::string
 }
     /*
     if (!file.is_open()) {
-        std::cout << "Impossible d'ouvrir le fichier " << filename << std::endl;
+        cout << "Impossible d'ouvrir le fichier " << filename << endl;
         // Créer quelques leaders par défaut
-        std::shared_ptr<LeaderGym> leader1(new LeaderGym("Pierre", "Roche", "Argenta"));
-        std::vector<std::string> typeRoche;
+        shared_ptr<LeaderGym> leader1(new LeaderGym("Pierre", "Roche", "Argenta"));
+        vector<string> typeRoche;
         typeRoche.push_back("Roche");
-        leader1->ajouterPokemon(std::make_shared<Pokemon>("Racaillou", typeRoche, 40, "Jet-Pierres", 60));
+        leader1->ajouterPokemon(make_shared<Pokemon>("Racaillou", typeRoche, 40, "Jet-Pierres", 60));
         
-        std::shared_ptr<LeaderGym> leader2(new LeaderGym("Ondine", "Cascade", "Azuria"));
-        std::vector<std::string> typeEauPsy;
+        shared_ptr<LeaderGym> leader2(new LeaderGym("Ondine", "Cascade", "Azuria"));
+        vector<string> typeEauPsy;
         typeEauPsy.push_back("Eau");
         typeEauPsy.push_back("Psy");
-        leader2->ajouterPokemon(std::make_shared<PokemonEau>("Staross", typeEauPsy, 45, "Hydrocanon", 75));
+        leader2->ajouterPokemon(make_shared<PokemonEau>("Staross", typeEauPsy, 45, "Hydrocanon", 75));
         
-        std::shared_ptr<LeaderGym> leader3(new LeaderGym("Major Bob", "Tonnerre", "Carmin sur Mer"));
-        std::vector<std::string> typeElectrik;
+        shared_ptr<LeaderGym> leader3(new LeaderGym("Major Bob", "Tonnerre", "Carmin sur Mer"));
+        vector<string> typeElectrik;
         typeElectrik.push_back("Électrik");
-        leader3->ajouterPokemon(std::make_shared<Pokemon>("Pikachu", typeElectrik, 35, "Éclair", 65));
+        leader3->ajouterPokemon(make_shared<Pokemon>("Pikachu", typeElectrik, 35, "Éclair", 65));
         
-        std::shared_ptr<LeaderGym> leader4(new LeaderGym("Erika", "Arc-en-ciel", "Céladopole"));
-        std::vector<std::string> typePlante;
+        shared_ptr<LeaderGym> leader4(new LeaderGym("Erika", "Arc-en-ciel", "Céladopole"));
+        vector<string> typePlante;
         typePlante.push_back("Plante");
         typePlante.push_back("Poison");
-        leader4->ajouterPokemon(std::make_shared<PokemonPlante>("Herbizarre", typePlante, 50, "Tranch'Herbe", 70));
+        leader4->ajouterPokemon(make_shared<PokemonPlante>("Herbizarre", typePlante, 50, "Tranch'Herbe", 70));
         
         leaders.push_back(leader1);
         leaders.push_back(leader2);
@@ -503,40 +503,69 @@ std::vector<std::shared_ptr<Pokemon> > chargerPokemonDepuisCSV(const std::string
         leaders.push_back(leader4);
         return leaders;
     }*/
-// Fonction pour charger les leaders de gym à partir d'un fichier CSV
-std::vector<std::shared_ptr<LeaderGym> > chargerLeadersDepuisCSV(const std::string& filename, const std::vector<std::shared_ptr<Pokemon> >& tousLesPokemon) {
-    std::vector<std::shared_ptr<LeaderGym> > leaders;
-    std::ifstream file(filename.c_str());
+
+
+shared_ptr<Joueur>  chargerJoueurDepuisCSV(const string& filename, const vector<shared_ptr<Pokemon> >& tousLesPokemon) {
+    shared_ptr<Joueur> joueur;
+    ifstream file(filename.c_str());
+    string line;
+    getline(file, line);
     
-    std::string line;
-    // Ignorer la première ligne (en-têtes)
-    std::getline(file, line);
-    
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-        std::string nom, gymnase, pokemonNom;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string nom, pokemonNom;
         
-        // Lire le nom et le gymnase
-        std::getline(ss, nom, ',');
-        std::getline(ss, gymnase, ',');
-        //std::getline(ss, medaille, ',');  // Skip the medal field
+        getline(ss, nom, ',');
         
-        // Créer le leader
-        std::shared_ptr<LeaderGym> leader(new LeaderGym(nom, gymnase));
+        joueur = shared_ptr<Joueur>(new Joueur(nom));
         
-        // Lire directement les noms des Pokémon (un par colonne)
-        while (std::getline(ss, pokemonNom, ',')) {
-            // Ignorer les entrées vides
+        while (getline(ss, pokemonNom, ',')) {
             if (pokemonNom.empty()) {
                 continue;
             }
             
-            // Chercher le Pokémon correspondant dans la liste
+            for (size_t i = 0; i < tousLesPokemon.size(); ++i) {
+                if (tousLesPokemon[i]->getNom() == pokemonNom) {
+                    // Créer une copie du Pokémon et l'ajouter à l'équipe du joueur
+                    Pokemon* newPokemon = new Pokemon(*tousLesPokemon[i]);
+                    joueur->ajouterPokemon(shared_ptr<Pokemon>(newPokemon));
+                    break;
+                }
+            }
+        }
+        
+    }
+    
+    file.close();
+    return joueur;
+}
+
+vector<shared_ptr<LeaderGym> > chargerLeadersDepuisCSV(const string& filename, const vector<shared_ptr<Pokemon> >& tousLesPokemon) {
+    vector<shared_ptr<LeaderGym> > leaders;
+    ifstream file(filename.c_str());
+    
+    string line;
+    getline(file, line);
+    
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string nom, gymnase, pokemonNom;
+        
+        getline(ss, nom, ',');
+        getline(ss, gymnase, ',');
+        
+        shared_ptr<LeaderGym> leader(new LeaderGym(nom, gymnase));
+        
+        while (getline(ss, pokemonNom, ',')) {
+            if (pokemonNom.empty()) {
+                continue;
+            }
+            
             for (size_t i = 0; i < tousLesPokemon.size(); ++i) {
                 if (tousLesPokemon[i]->getNom() == pokemonNom) {
                     // Créer une copie du Pokémon et l'ajouter à l'équipe du leader
                     Pokemon* newPokemon = new Pokemon(*tousLesPokemon[i]);
-                    leader->ajouterPokemon(std::shared_ptr<Pokemon>(newPokemon));
+                    leader->ajouterPokemon(shared_ptr<Pokemon>(newPokemon));
                     break;
                 }
             }
@@ -549,57 +578,39 @@ std::vector<std::shared_ptr<LeaderGym> > chargerLeadersDepuisCSV(const std::stri
     return leaders;
 }
 
+
+
 // Fonction pour charger les maîtres Pokémon à partir d'un fichier CSV
-std::vector<std::shared_ptr<MaitrePokemon> > chargerMaitresDepuisCSV(const std::string& filename, const std::vector<std::shared_ptr<Pokemon> >& tousLesPokemon) {
-    std::vector<std::shared_ptr<MaitrePokemon> > maitres;
-    std::ifstream file(filename.c_str());
-    
-    if (!file.is_open()) {
-        std::cout << "Impossible d'ouvrir le fichier " << filename << std::endl;
-        // Créer quelques maîtres par défaut
-        std::shared_ptr<MaitrePokemon> maitre1(new MaitrePokemon("Sacha"));
-        std::vector<std::string> typeElectrik;
-        typeElectrik.push_back("Électrik");
-        maitre1->ajouterPokemon(std::make_shared<Pokemon>("Pikachu", typeElectrik, 60, "Fatal-Foudre", 90,25));
-        
-        std::vector<std::string> typeFeuVol;
-        typeFeuVol.push_back("Feu");
-        typeFeuVol.push_back("Vol");
-        maitre1->ajouterPokemon(std::make_shared<PokemonFeu>("Dracaufeu", typeFeuVol, 78, "Lance-Flammes", 95,2));
-        
-        std::shared_ptr<MaitrePokemon> maitre2(new MaitrePokemon("Peter"));
-        std::vector<std::string> typeDragonVol;
-        typeDragonVol.push_back("Dragon");
-        typeDragonVol.push_back("Vol");
-        maitre2->ajouterPokemon(std::make_shared<Pokemon>("Dracolosse", typeDragonVol, 90, "Colère", 100,3));
-        
-        maitres.push_back(maitre1);
-        maitres.push_back(maitre2);
-        return maitres;
-    }
-    
-    std::string line;
+vector<shared_ptr<MaitrePokemon> > chargerMaitresDepuisCSV(const string& filename, const vector<shared_ptr<Pokemon> >& tousLesPokemon) {
+    vector<shared_ptr<MaitrePokemon> > maitres;
+    ifstream file(filename.c_str());
+    string line;
     // Ignorer la première ligne (en-têtes)
-    std::getline(file, line);
+    getline(file, line);
     
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-        std::string nom, pokemonsStr;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        string nom, pokemonsStr;
         
-        std::getline(ss, nom, ',');
-        std::getline(ss, pokemonsStr, ',');
+        getline(ss, nom,',');
+        getline(ss, pokemonsStr, ',');
         
-        std::shared_ptr<MaitrePokemon> maitre(new MaitrePokemon(nom));
+        shared_ptr<MaitrePokemon> maitre(new MaitrePokemon(nom));
         
         // Ajouter les Pokémon au maître
-        std::stringstream pokemonsStream(pokemonsStr);
-        std::string pokemonNom;
-        while (std::getline(pokemonsStream, pokemonNom, '|')) {
+        stringstream pokemonsStream(pokemonsStr);
+        string pokemonNom;
+
+        while (getline(ss, pokemonNom, ',')) {
+            if (pokemonNom.empty()) {
+                continue;
+            }
+            
             for (size_t i = 0; i < tousLesPokemon.size(); ++i) {
                 if (tousLesPokemon[i]->getNom() == pokemonNom) {
-                    // Pre-C++11 doesn't have make_shared, use explicit new
+                    // Créer une copie du Pokémon et l'ajouter à l'équipe du leader
                     Pokemon* newPokemon = new Pokemon(*tousLesPokemon[i]);
-                    maitre->ajouterPokemon(std::shared_ptr<Pokemon>(newPokemon));
+                    maitre->ajouterPokemon(shared_ptr<Pokemon>(newPokemon));
                     break;
                 }
             }
@@ -612,31 +623,31 @@ std::vector<std::shared_ptr<MaitrePokemon> > chargerMaitresDepuisCSV(const std::
     return maitres;
 }
 
-void debugAfficherEquipeHP(const std::shared_ptr<Entraineur>& entraineur) {
-    std::cout << "\n----- DEBUG: ÉTAT DE L'ÉQUIPE DE " << entraineur->getNom() << " -----" << std::endl;
-    const std::vector<std::shared_ptr<Pokemon> >& equipe = entraineur->getEquipe();
+void debugAfficherEquipeHP(const shared_ptr<Entraineur>& entraineur) {
+    cout << "\n----- DEBUG: ÉTAT DE L'ÉQUIPE DE " << entraineur->getNom() << " -----" << endl;
+    const vector<shared_ptr<Pokemon> >& equipe = entraineur->getEquipe();
     
     // Afficher chaque Pokémon et son état
     for (size_t i = 0; i < equipe.size(); ++i) {
-        std::cout << i + 1 << ". " << equipe[i]->getNom() 
+        cout << i + 1 << ". " << equipe[i]->getNom() 
                   << " (HP: " << equipe[i]->getHp() << "/" << equipe[i]->getHpMax() 
-                  << ") - " << (equipe[i]->estVivant() ? "VIVANT" : "KO") << std::endl;
+                  << ") - " << (equipe[i]->estVivant() ? "VIVANT" : "KO") << endl;
     }
     
     // Afficher le résultat de tousLesPokemonKO()
-    std::cout << "tousLesPokemonKO() retourne: " 
-              << (entraineur->tousLesPokemonKO() ? "true (tous KO)" : "false (certains vivants)") << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
+    cout << "tousLesPokemonKO() retourne: " 
+              << (entraineur->tousLesPokemonKO() ? "true (tous KO)" : "false (certains vivants)") << endl;
+    cout << "----------------------------------------" << endl;
 }
 
-void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversaire) 
+void combat(shared_ptr<Joueur> joueur, shared_ptr<Entraineur> adversaire) 
 {
-    std::cout << "\n----- DÉBUT DU COMBAT -----" << std::endl;
-    std::cout << joueur->getNom() << " VS " << adversaire->getNom() << std::endl;
+    cout << "\n----- DÉBUT DU COMBAT -----" << endl;
+    cout << joueur->getNom() << " VS " << adversaire->getNom() << endl;
     
     // Vérifier si les deux dresseurs ont des Pokémon
     if (joueur->getEquipe().empty() || adversaire->getEquipe().empty()) {
-        std::cout << "Un des dresseurs n'a pas de Pokémon!" << std::endl;
+        cout << "Un des dresseurs n'a pas de Pokémon!" << endl;
         return;
     }
     //debugAfficherEquipeHP(adversaire);
@@ -644,37 +655,37 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
     string inutile; //HERE
 
     // Déclarer pokemonJoueur et pokemonAdversaire
-    std::shared_ptr<Pokemon> pokemonJoueur = joueur->getPremierPokemonVivant();
-    std::shared_ptr<Pokemon> pokemonAdversaire = adversaire->getPremierPokemonVivant();
+    shared_ptr<Pokemon> pokemonJoueur = joueur->getPremierPokemonVivant();
+    shared_ptr<Pokemon> pokemonAdversaire = adversaire->getPremierPokemonVivant();
     
     // Combat au tour par tour
     while (!joueur->tousLesPokemonKO() && !adversaire->tousLesPokemonKO()) 
     {
         
-        std::cout << "\n";
-        std::cout << " #######                                                                                   \n";
-        std::cout << "    #     ####  #    # #####     #####  ######     ####   ####  #    # #####    ##   ##### \n";
-        std::cout << "    #    #    # #    # #    #    #    # #         #    # #    # ##  ## #    #  #  #    #   \n";
-        std::cout << "    #    #    # #    # #    #    #    # #####     #      #    # # ## # #####  #    #   #   \n";
-        std::cout << "    #    #    # #    # #####     #    # #         #      #    # #    # #    # ######   #   \n";
-        std::cout << "    #    #    # #    # #   #     #    # #         #    # #    # #    # #    # #    #   #   \n";
-        std::cout << "    #     ####   ####  #    #    #####  ######     ####   ####  #    # #####  #    #   #   \n\n";        
+        cout << "\n";
+        cout << " #######                                                                                   \n";
+        cout << "    #     ####  #    # #####     #####  ######     ####   ####  #    # #####    ##   ##### \n";
+        cout << "    #    #    # #    # #    #    #    # #         #    # #    # ##  ## #    #  #  #    #   \n";
+        cout << "    #    #    # #    # #    #    #    # #####     #      #    # # ## # #####  #    #   #   \n";
+        cout << "    #    #    # #    # #####     #    # #         #      #    # #    # #    # ######   #   \n";
+        cout << "    #    #    # #    # #   #     #    # #         #    # #    # #    # #    # #    #   #   \n";
+        cout << "    #     ####   ####  #    #    #####  ######     ####   ####  #    # #####  #    #   #   \n\n";        
            
         
-        std::cout << pokemonJoueur->getNom()<<endl;
+        cout << pokemonJoueur->getNom()<<endl;
         afficheHp(pokemonJoueur->getHp(),pokemonJoueur->getHpMax());
         print_pokemon(pokemonJoueur->getNumPokedex());
 
 
-        std::cout << "\n\n #     #  #####  \n";
-        std::cout << " #     # #     # \n";
-        std::cout << " #     # #       \n";
-        std::cout << " #     #  #####  \n";
-        std::cout << "  #   #        # \n";
-        std::cout << "   # #   #     # \n";
-        std::cout << "    #     #####  \n";
-        std::cout << "                 \n";
-        std::cout << pokemonAdversaire->getNom()<<endl;
+        cout << "\n\n #     #  #####  \n";
+        cout << " #     # #     # \n";
+        cout << " #     # #       \n";
+        cout << " #     #  #####  \n";
+        cout << "  #   #        # \n";
+        cout << "   # #   #     # \n";
+        cout << "    #     #####  \n";
+        cout << "                 \n";
+        cout << pokemonAdversaire->getNom()<<endl;
         afficheHp(pokemonAdversaire->getHp(),pokemonAdversaire->getHpMax());
         print_pokemon(pokemonAdversaire->getNumPokedex());
 
@@ -685,19 +696,19 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
         //debugAfficherEquipeHP(adversaire);
         // Vérifier si le Pokémon adversaire est KO
         if (!pokemonAdversaire->estVivant()) {
-            std::cout << pokemonAdversaire->getNom() << " est KO!" << std::endl;
+            cout << pokemonAdversaire->getNom() << " est KO!" << endl;
             
             // Vérifier si l'adversaire a encore des Pokémon vivants
             if (!adversaire->tousLesPokemonKO()) {
                 // Obtenir le prochain Pokémon vivant
                 pokemonAdversaire = adversaire->getPremierPokemonVivant();
-                std::cout << adversaire->getNom() << " envoie " << pokemonAdversaire->getNom() << "!" << std::endl;
+                cout << adversaire->getNom() << " envoie " << pokemonAdversaire->getNom() << "!" << endl;
             } else {
                 // Si tous les Pokémon de l'adversaire sont KO, terminer le tour
                 break;
             }
         }
-        std::cout << "\n PRESS N + ENTER TO CONTINUE \n";
+        cout << "\n PRESS N + ENTER TO CONTINUE \n";
         cin>>inutile; // Waits for Enter after a key press
         
         if (pokemonAdversaire->estVivant()) {
@@ -710,32 +721,32 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
             
             // Vérifier si le Pokémon du joueur est KO
             if (!pokemonJoueur->estVivant()) {
-                std::cout << pokemonJoueur->getNom() << " est KO!" << std::endl;
+                cout << pokemonJoueur->getNom() << " est KO!" << endl;
                 
                 // Vérifier si le joueur a encore des Pokémon vivants
                 if (!joueur->tousLesPokemonKO()) {
                     // Obtenir le prochain Pokémon vivant
                     pokemonJoueur = joueur->getPremierPokemonVivant();
-                    std::cout << joueur->getNom() << " envoie " << pokemonJoueur->getNom() << "!" << std::endl;
+                    cout << joueur->getNom() << " envoie " << pokemonJoueur->getNom() << "!" << endl;
                 }
             }
         }
-        std::cout << "\n PRESS N + ENTER TO CONTINUE \n";
+        cout << "\n PRESS N + ENTER TO CONTINUE \n";
         cin>>inutile; // Waits for Enter after a key press
     }
     
     // Déterminer le vainqueur
     bool joueurGagnant = !joueur->tousLesPokemonKO();
     
-    std::cout << "\n----- FIN DU COMBAT -----" << std::endl;
+    cout << "\n----- FIN DU COMBAT -----" << endl;
     if (joueurGagnant) {
-        std::cout << joueur->getNom() << " a gagné le combat!" << std::endl;
+        cout << joueur->getNom() << " a gagné le combat!" << endl;
         joueur->incrementerCombatsGagnes();
         
         // Si l'adversaire est un Leader de Gym, le joueur gagne un badge
         LeaderGym* leader = dynamic_cast<LeaderGym*>(adversaire.get());
         if (leader) {
-            std::cout << leader->getNom() << " dit: \"Félicitations! Tu as gagné le badge " << leader->getBadge() << "!\"" << std::endl;
+            cout << leader->getNom() << " dit: \"Félicitations! Tu as gagné le badge " << leader->getBadge() << "!\"" << endl;
             joueur->ajouterBadge();
             leader->setVaincu(true);
         }
@@ -746,96 +757,88 @@ void combat(std::shared_ptr<Joueur> joueur, std::shared_ptr<Entraineur> adversai
             maitre->setVaincu(true);
         }
     } else {
-        std::cout << adversaire->getNom() << " a gagné le combat!" << std::endl;
+        cout << adversaire->getNom() << " a gagné le combat!" << endl;
         joueur->incrementerCombatsPerdus();
     }
-    std::cout << "\n PRESS N + ENTER TO CONTINUE \n";
+    cout << "\n PRESS N + ENTER TO CONTINUE \n";
     cin>>inutile; // Waits for Enter after a key press
 
 }
 // Fonction qui gère le menu principal
-void menuPrincipal(std::shared_ptr<Joueur> joueur, 
-                  std::vector<std::shared_ptr<LeaderGym> > leaders,
-                  std::vector<std::shared_ptr<MaitrePokemon> > maitres,
-                  std::vector<std::shared_ptr<Entraineur> > entraineursVaincus) 
+void menuPrincipal(shared_ptr<Joueur> joueur, 
+                  vector<shared_ptr<LeaderGym> > leaders,
+                  vector<shared_ptr<MaitrePokemon> > maitres,
+                  vector<shared_ptr<Entraineur> > entraineursVaincus) 
 {
     
     bool quitter = false;
     
     while (!quitter) {
         system("clear");
-        std::cout << "\n===== MENU PRINCIPAL =====" << std::endl;
-        std::cout << "1. Afficher mes Pokémon" << std::endl;
-        std::cout << "2. Récupérer les points de vie de mes Pokémon" << std::endl;
-        std::cout << "3. Changer l'ordre de mes Pokémon" << std::endl;
-        std::cout << "4. Afficher mes statistiques" << std::endl;
-        std::cout << "5. Affronter un leader de gymnase" << std::endl;
-        std::cout << "6. Affronter un Maître Pokémon" << std::endl;
-        std::cout << "7. Interagir avec mes Pokémon" << std::endl;
-        std::cout << "8. Interagir avec les entraîneurs vaincus" << std::endl;
-        std::cout << "9. Quitter" << std::endl;
-        std::cout << "Votre choix: ";
+        cout << "\n===== MENU PRINCIPAL =====" << endl;
+        cout << "1. Afficher mes Pokémon" << endl;
+        cout << "2. Récupérer les points de vie de mes Pokémon" << endl;
+        cout << "3. Changer l'ordre de mes Pokémon" << endl;
+        cout << "4. Afficher mes statistiques" << endl;
+        cout << "5. Affronter un leader de gymnase" << endl;
+        cout << "6. Affronter un Maître Pokémon" << endl;
+        cout << "7. Interagir avec mes Pokémon" << endl;
+        cout << "8. Interagir avec les entraîneurs vaincus" << endl;
+        cout << "9. Quitter" << endl;
+        cout << "Votre choix: ";
         
         int choix;
-        std::cin >> choix;
+        cin >> choix;
         
         // Nettoyer le buffer d'entrée
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         //system("clear");
         switch (choix) {
             case 1: {
                 // Afficher les Pokémon du joueur
                 joueur->afficherEquipe();
-                cout<<"Appuyer sur une Q puis ENTER pour continuer";
-                string p;
-                cin>>p;
+
                 break;
             }
             case 2: {
                 // Récupérer les points de vie des Pokémon
                 joueur->recupererTousLesPokemon();
-                cout<<"Point de vie recuperés"<<endl<<"Appuyer sur une Q puis ENTER pour continuer";
-                string p;
-                cin>>p;
+                cout<<"Point de vie recuperés"<<endl;
                 break;
             }
             case 3: {
                 // Changer l'ordre des Pokémon
                 joueur->afficherEquipe();
-                std::cout << "Entrez l'indice du premier Pokémon à échanger (1-" << joueur->getEquipe().size() << "): ";
+                cout << "Entrez l'indice du premier Pokémon à échanger (1-" << joueur->getEquipe().size() << "): ";
                 int index1;
-                std::cin >> index1;
+                cin >> index1;
                 
-                std::cout << "Entrez l'indice du second Pokémon à échanger (1-" << joueur->getEquipe().size() << "): ";
+                cout << "Entrez l'indice du second Pokémon à échanger (1-" << joueur->getEquipe().size() << "): ";
                 int index2;
-                std::cin >> index2;
-                
+                cin >> index2;
                 joueur->changerOrdrePokemon(index1 - 1, index2 - 1);
                 break;
             }
             case 4: {
                 // Afficher les statistiques du joueur
                 joueur->afficherStatistiques();
-                cout<<"Appuyer sur une Q puis ENTER pour continuer";
-                string p;
-                cin>>p;
                 break;
             }
             case 5: {
                 // Affronter un leader de gymnase
-                std::cout << "\n=== LEADERS DE GYMNASE DISPONIBLES ===" << std::endl;
+                cout << "\n=== LEADERS DE GYMNASE DISPONIBLES ===" << endl;
                 for (size_t i = 0; i < leaders.size(); ++i) {
-                    std::cout << i + 1 << ". " << leaders[i]->getNom() << " (" << leaders[i]->getGymnase() << ")";
+                    cout << i + 1 << ". " << leaders[i]->getNom() << " (" << leaders[i]->getGymnase() << ")";
                     if (leaders[i]->estVaincu()) {
-                        std::cout << " [DÉJÀ VAINCU]";
+                        cout << " [DÉJÀ VAINCU]";
                     }
-                    std::cout << std::endl;
+                    cout << endl;
                 }
                 
-                std::cout << "Choisissez un leader à affronter (0 pour revenir): ";
+                cout << "Choisissez un leader à affronter (0 pour revenir): ";
                 int choixLeader = 1;
-                std::cin >> choixLeader; 
+                cin >> choixLeader; 
                 
                 if (choixLeader > 0 && choixLeader <= static_cast<int>(leaders.size())) {
                     combat(joueur, leaders[choixLeader - 1]);
@@ -859,11 +862,12 @@ void menuPrincipal(std::shared_ptr<Joueur> joueur,
             }
             case 6: {
                 // Affronter un Maître Pokémon (seulement si tous les badges sont obtenus)
-                if (joueur->getBadges() >= 4) {  // Minimum 4 badges requis
+                //if (joueur->getBadges() >= 4) {  // Minimum 4 badges requis HERE
+                {
                     // Choisir un maître au hasard
                     if (!maitres.empty()) {
                         int indexMaitre = getRandomNumber(0, maitres.size() - 1);
-                        std::cout << "Vous allez affronter le Maître Pokémon " << maitres[indexMaitre]->getNom() << "!" << std::endl;
+                        cout << "Vous allez affronter le Maître Pokémon " << maitres[indexMaitre]->getNom() << "!" << endl;
                         combat(joueur, maitres[indexMaitre]);
                         
                         // Ajouter le maître aux entraîneurs vaincus s'il a été battu
@@ -881,50 +885,52 @@ void menuPrincipal(std::shared_ptr<Joueur> joueur,
                             }
                         }
                     } else {
-                        std::cout << "Aucun Maître Pokémon disponible!" << std::endl;
+                        cout << "Aucun Maître Pokémon disponible!" << endl;
                     }
-                } else {
-                    std::cout << "Vous devez obtenir au moins 4 badges avant de pouvoir affronter un Maître Pokémon!" << std::endl;
+                //} else { HERE
+                //    cout << "Vous devez obtenir au moins 4 badges avant de pouvoir affronter un Maître Pokémon!" << endl;
                 }
                 break;
             }
+
             case 7: {
                 // Interagir avec les Pokémon du joueur
                 joueur->afficherEquipe();
-                std::cout << "Avec quel Pokémon voulez-vous interagir? (1-" << joueur->getEquipe().size() << ", 0 pour annuler): ";
+                cout << "Avec quel Pokémon voulez-vous interagir? (1-" << joueur->getEquipe().size() << ", 0 pour annuler): ";
                 int choixPokemon;
-                std::cin >> choixPokemon;
+                cin >> choixPokemon;
                 
                 if (choixPokemon > 0 && choixPokemon <= static_cast<int>(joueur->getEquipe().size())) {
                     //system("clear");
                     print_pokemon(joueur->getEquipe()[choixPokemon - 1]->getNumPokedex());
-                    std::cout << joueur->getEquipe()[choixPokemon - 1]->interagir() << std::endl;
+                    cout << joueur->getEquipe()[choixPokemon - 1]->interagir() << endl;
                 }
                 break;
             }
             case 8: {
                 // Interagir avec les entraîneurs vaincus
                 if (entraineursVaincus.empty()) {
-                    std::cout << "Vous n'avez pas encore vaincu d'entraîneur!" << std::endl;
+                    cout << "Vous n'avez pas encore vaincu d'entraîneur!" << endl;
                 } else {
-                    std::cout << "\n=== ENTRAÎNEURS VAINCUS ===" << std::endl;
+                    cout << "\n=== ENTRAÎNEURS VAINCUS ===" << endl;
                     for (size_t i = 0; i < entraineursVaincus.size(); ++i) {
-                        std::cout << i + 1 << ". " << entraineursVaincus[i]->getNom() << std::endl;
+                        cout << i + 1 << ". " << entraineursVaincus[i]->getNom() << endl;
                     }
                     
-                    std::cout << "Avec quel entraîneur voulez-vous interagir? (1-" << entraineursVaincus.size() << ", 0 pour annuler): ";
+                    cout << "Avec quel entraîneur voulez-vous interagir? (1-" << entraineursVaincus.size() << ", 0 pour annuler): ";
                     int choixEntraineur;
-                    std::cin >> choixEntraineur;
+                    cin >> choixEntraineur;
                     
                     if (choixEntraineur > 0 && choixEntraineur <= static_cast<int>(entraineursVaincus.size())) {
-                        std::cout << entraineursVaincus[choixEntraineur - 1]->interagir() << std::endl;
+                        cout << entraineursVaincus[choixEntraineur - 1]->interagir() << endl;
                     }
+
                 }
                 break;
             }
             case 9: {
                 // Quitter le jeu
-                std::cout << "Merci d'avoir joué! À bientôt!" << std::endl;
+                cout << "Merci d'avoir joué! À bientôt!" << endl;
                 quitter = true;
                 break;
             }
@@ -932,107 +938,119 @@ void menuPrincipal(std::shared_ptr<Joueur> joueur,
                 system("clear");
                 break;
             default: {
-                std::cout << "Choix invalide. Veuillez réessayer." << std::endl;
+                cout << "Choix invalide. Veuillez réessayer." << endl;
                 break;
             }
         }
+        cout<<"Appuyer sur une Q + ENTER pour continuer : ";
+        string p;
+        cin>>p;
     }
 }
 
-// Fonction principale
-int main() {
-    system("clear");
-    std::cout << "=== SIMULATEUR DE COMBAT POKÉMON ===" << std::endl;
-    
-    // Charger les données des fichiers CSV
-    std::vector<std::shared_ptr<Pokemon> > tousLesPokemon = chargerPokemonDepuisCSV("pokemon.csv");
-    std::vector<std::shared_ptr<LeaderGym> > leaders = chargerLeadersDepuisCSV("leaders.csv", tousLesPokemon);
-    std::vector<std::shared_ptr<MaitrePokemon> > maitres = chargerMaitresDepuisCSV("maitres.csv", tousLesPokemon);
-    
-    // Créer un joueur
-    std::string nomJoueur;
-    std::cout << "Entrez votre nom: ";
-    std::getline(std::cin, nomJoueur); 
-    //nomJoueur = "Antoine Lesort";
-    
-    std::shared_ptr<Joueur> joueur(new Joueur(nomJoueur));
-    
-    std::cout << "\nChoisissez vos Pokémon de départ:" << std::endl;
-    std::cout << "Pokémon disponibles:" << std::endl;
-    
-    for (size_t i = 0; i < tousLesPokemon.size(); ++i) {
-        std::cout << i + 1 << ". " << tousLesPokemon[i]->afficherInfos() << std::endl;
-    }
-    
-    for (int i = 0; i < 3; ++i) {  // Sélection de 3 Pokémon initiaux
-        std::cout << "\nChoisissez votre Pokémon #" << i + 1 << " (1-" << tousLesPokemon.size() << "): ";
-        int choix;
-        std::cin >> choix;
-            if (choix > 0 && choix <= static_cast<int>(tousLesPokemon.size())) {
-            // On crée une copie du Pokémon choisi pour éviter de partager la même instance
-            Pokemon* newPokemon = nullptr;
-            
-            // Utiliser le bon type de Pokémon en fonction du type principal
-            const std::vector<std::string>& types = tousLesPokemon[choix - 1]->getTypes();
-            if (!types.empty()) {
-                if (types[0] == "Feu") {
-                    newPokemon = new PokemonFeu(
-                        tousLesPokemon[choix - 1]->getNom(),
-                        tousLesPokemon[choix - 1]->getTypes(),
-                        tousLesPokemon[choix - 1]->getHpMax(),
-                        tousLesPokemon[choix - 1]->getNomAttaque(),
-                        tousLesPokemon[choix - 1]->getDegatsAttaque(),
-                        tousLesPokemon[choix - 1]->getNumPokedex()
+shared_ptr<Joueur> CreateJoueur(string filename, vector<shared_ptr<Pokemon> > tousLesPokemon)
+{
+    shared_ptr<Joueur> joueur;  // Déclaré ici pour être visible à la fin
 
-                    );
-                } else if (types[0] == "Eau") {
-                    newPokemon = new PokemonEau(
-                        tousLesPokemon[choix - 1]->getNom(),
-                        tousLesPokemon[choix - 1]->getTypes(),
-                        tousLesPokemon[choix - 1]->getHpMax(),
-                        tousLesPokemon[choix - 1]->getNomAttaque(),
-                        tousLesPokemon[choix - 1]->getDegatsAttaque(),
-                        tousLesPokemon[choix - 1]->getNumPokedex()
-                    );
-                } else if (types[0] == "Plante") {
-                    newPokemon = new PokemonPlante(
-                        tousLesPokemon[choix - 1]->getNom(),
-                        tousLesPokemon[choix - 1]->getTypes(),
-                        tousLesPokemon[choix - 1]->getHpMax(),
-                        tousLesPokemon[choix - 1]->getNomAttaque(),
-                        tousLesPokemon[choix - 1]->getDegatsAttaque(),
-                        tousLesPokemon[choix - 1]->getNumPokedex()
-                    );
-                } else {
-                    newPokemon = new Pokemon(
-                        tousLesPokemon[choix - 1]->getNom(),
-                        tousLesPokemon[choix - 1]->getTypes(),
-                        tousLesPokemon[choix - 1]->getHpMax(),
-                        tousLesPokemon[choix - 1]->getNomAttaque(),
-                        tousLesPokemon[choix - 1]->getDegatsAttaque(),
-                        tousLesPokemon[choix - 1]->getNumPokedex()
-                    );
+    string rep;
+    do {
+        cout << "Voulez vous jouer vous meme (M) ou jouer avec un joueur pre-cree (P): ";
+        cin >> rep;
+    } while (rep != "M" && rep != "P");
+
+    if (rep == "P") {
+        joueur = chargerJoueurDepuisCSV(filename, tousLesPokemon);
+    } else {
+        string nomJoueur;
+        cin.ignore(); // Important pour ignorer le '\n' après cin >> rep
+        cout << "Entrez votre nom: ";
+        getline(cin, nomJoueur);
+
+        joueur = shared_ptr<Joueur>(new Joueur(nomJoueur));
+
+        cout << "\nChoisissez vos Pokémon de départ:" << endl;
+        for (size_t i = 0; i < tousLesPokemon.size(); ++i) {
+            cout << i + 1 << ". " << tousLesPokemon[i]->afficherInfos() << endl;
+        }
+
+        for (int i = 0; i < 3; ++i) {
+            cout << "\nChoisissez votre Pokémon #" << i + 1 << " (1-" << tousLesPokemon.size() << "): ";
+            int choix;
+            cin >> choix;
+
+            if (choix > 0 && choix <= (int)tousLesPokemon.size()) {
+                Pokemon* selected = tousLesPokemon[choix - 1].get();
+                const vector<string>& types = selected->getTypes();
+                Pokemon* newPokemon = NULL;
+
+                if (!types.empty()) {
+                    if (types[0] == "Feu") {
+                        newPokemon = new PokemonFeu(
+                            selected->getNom(),
+                            selected->getTypes(),
+                            selected->getHpMax(),
+                            selected->getNomAttaque(),
+                            selected->getDegatsAttaque(),
+                            selected->getNumPokedex()
+                        );
+                    } else if (types[0] == "Eau") {
+                        newPokemon = new PokemonEau(
+                            selected->getNom(),
+                            selected->getTypes(),
+                            selected->getHpMax(),
+                            selected->getNomAttaque(),
+                            selected->getDegatsAttaque(),
+                            selected->getNumPokedex()
+                        );
+                    } else if (types[0] == "Plante") {
+                        newPokemon = new PokemonPlante(
+                            selected->getNom(),
+                            selected->getTypes(),
+                            selected->getHpMax(),
+                            selected->getNomAttaque(),
+                            selected->getDegatsAttaque(),
+                            selected->getNumPokedex()
+                        );
+                    } else {
+                        newPokemon = new Pokemon(
+                            selected->getNom(),
+                            selected->getTypes(),
+                            selected->getHpMax(),
+                            selected->getNomAttaque(),
+                            selected->getDegatsAttaque(),
+                            selected->getNumPokedex()
+                        );
+                    }
                 }
-                print_pokemon(choix);
+
+                if (newPokemon != NULL) {
+                    joueur->ajouterPokemon(shared_ptr<Pokemon>(newPokemon));
+                    cout << selected->getNom() << " a été ajouté à votre équipe!" << endl;
+                }
+            } else {
+                cout << "Choix invalide. Réessayez." << endl;
+                i--;
             }
-            
-            if (newPokemon) {
-                joueur->ajouterPokemon(std::shared_ptr<Pokemon>(newPokemon));
-                std::cout << tousLesPokemon[choix - 1]->getNom() << " a été ajouté à votre équipe!" << std::endl;
-            }
-        } else {
-            std::cout << "Choix invalide. Réessayez." << std::endl;
-            i--; // Recommencer ce tour de boucle
         }
     }
+
+    return joueur;
+}
+
+int main() {
+    system("clear");
+    cout << "=== SIMULATEUR DE COMBAT POKÉMON ===" << endl;
     
+    vector<shared_ptr<Pokemon> > tousLesPokemon = chargerPokemonDepuisCSV("pokemon.csv");
+    vector<shared_ptr<LeaderGym> > leaders = chargerLeadersDepuisCSV("leaders.csv", tousLesPokemon);
+    vector<shared_ptr<MaitrePokemon> > maitres = chargerMaitresDepuisCSV("maitres.csv", tousLesPokemon);
+    shared_ptr<Joueur> joueur = CreateJoueur("joueur.csv", tousLesPokemon);
     // Nettoyer le buffer d'entrée
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     
     // Liste des entraîneurs vaincus
-    std::vector<std::shared_ptr<Entraineur> > entraineursVaincus;
-    
+    vector<shared_ptr<Entraineur> > entraineursVaincus;
     // Lancer le menu principal
     menuPrincipal(joueur, leaders, maitres, entraineursVaincus);
     
