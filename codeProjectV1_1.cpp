@@ -25,7 +25,8 @@ public:
 class Pokemon : public Interagir {
 protected:
     string nom;
-    vector<string> types;
+    string type1;
+    string type2;
     int hp;
     int hpMax;
     string nomAttaque;
@@ -35,9 +36,8 @@ protected:
     int numPokedex;
 
 public:
-    Pokemon(const string& nom, const vector<string>& types, 
-            int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
-        : nom(nom), types(types), hp(hp), hpMax(hp), nomAttaque(nomAttaque), degatsAttaque(degatsAttaque), numPokedex(numPokedex) {
+    Pokemon(const string& nom, const string& type1, const string& type2, int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
+        : nom(nom), type1(type1),type2(type2), hp(hp), hpMax(hp), nomAttaque(nomAttaque), degatsAttaque(degatsAttaque), numPokedex(numPokedex) {
         initTableEfficacite();
     }
 
@@ -70,7 +70,8 @@ public:
     }
 
     const string& getNom() const { return nom; }
-    const vector<string>& getTypes() const { return types; }
+    const string& getType1() const { return type1; }
+    const string& getType2() const { return type2; }
     int getHp() const { return hp; }
     int getHpMax() const { return hpMax; }
     const string& getNomAttaque() const { return nomAttaque; }
@@ -88,14 +89,19 @@ public:
     bool estVivant() const { return hp > 0; }
 
     virtual string getTypeAttaque() const {
-        return !types.empty() ? types[0] : "Normal";
+        //used to be : return !types.empty() ? types[0] : "Normal";
+        return type1;
     }
 
     float getMultiplicateurEfficacite(const string& typeAttaque) const {
         float multiplicateur = 1.0f;
-        
-        for (size_t i = 0; i < types.size(); ++i) {
-            const string& type = types[i];
+        int nbType = 2;
+        if(type2=="")
+            nbType=1;
+        for (size_t i = 0; i < nbType; ++i) {
+            string type = type1;
+            if(i==1)
+            {type=type2;}
             if (type == "Feu") {
                 if (typeAttaque == "Eau" || typeAttaque == "Roche" || typeAttaque == "Sol") multiplicateur *= 2.0f;
                 if (typeAttaque == "Plante" || typeAttaque == "Glace" || typeAttaque == "Insecte" || 
@@ -108,7 +114,7 @@ public:
             }
             else if (type == "Plante") {
                 if (typeAttaque == "Feu" || typeAttaque == "Glace" || typeAttaque == "Poison" || 
-                   typeAttaque == "Vol" || typeAttaque == "Insecte") multiplicateur *= 2.0f;
+                    typeAttaque == "Vol" || typeAttaque == "Insecte") multiplicateur *= 2.0f;
                 if (typeAttaque == "Eau" || typeAttaque == "Sol" || typeAttaque == "Roche") multiplicateur *= 0.5f;
             }
             else if (type == "Électrik") {
@@ -116,11 +122,64 @@ public:
                 if (typeAttaque == "Vol" || typeAttaque == "Acier" || typeAttaque == "Électrik") multiplicateur *= 0.5f;
             }
             else if (type == "Glace") {
-                if (typeAttaque == "Feu" || typeAttaque == "Combat" || typeAttaque == "Roche" || 
-                   typeAttaque == "Acier") multiplicateur *= 2.0f;
+                if (typeAttaque == "Feu" || typeAttaque == "Combat" || typeAttaque == "Roche" || typeAttaque == "Acier") multiplicateur *= 2.0f;
                 if (typeAttaque == "Glace") multiplicateur *= 0.5f;
             }
-            // Ajoutez les autres types ici...
+            else if (type == "Combat") {
+                if (typeAttaque == "Vol" || typeAttaque == "Psy" || typeAttaque == "Fée") multiplicateur *= 2.0f;
+                if (typeAttaque == "Roche" || typeAttaque == "Insecte" || typeAttaque == "Ténèbres") multiplicateur *= 0.5f;
+            }
+            else if (type == "Poison") {
+                if (typeAttaque == "Sol" || typeAttaque == "Psy") multiplicateur *= 2.0f;
+                if (typeAttaque == "Plante" || typeAttaque == "Fée" || typeAttaque == "Combat" || 
+                    typeAttaque == "Poison" || typeAttaque == "Insecte") multiplicateur *= 0.5f;
+            }
+            else if (type == "Sol") {
+                if (typeAttaque == "Eau" || typeAttaque == "Plante" || typeAttaque == "Glace") multiplicateur *= 2.0f;
+                if (typeAttaque == "Poison" || typeAttaque == "Roche") multiplicateur *= 0.5f;
+            }
+            else if (type == "Vol") {
+                if (typeAttaque == "Électrik" || typeAttaque == "Glace" || typeAttaque == "Roche") multiplicateur *= 2.0f;
+                if (typeAttaque == "Plante" || typeAttaque == "Combat" || typeAttaque == "Insecte") multiplicateur *= 0.5f;
+            }
+            else if (type == "Psy") {
+                if (typeAttaque == "Insecte" || typeAttaque == "Spectre" || typeAttaque == "Ténèbres") multiplicateur *= 2.0f;
+                if (typeAttaque == "Combat" || typeAttaque == "Psy") multiplicateur *= 0.5f;
+            }
+            else if (type == "Insecte") {
+                if (typeAttaque == "Feu" || typeAttaque == "Vol" || typeAttaque == "Roche") multiplicateur *= 2.0f;
+                if (typeAttaque == "Plante" || typeAttaque == "Combat" || typeAttaque == "Sol") multiplicateur *= 0.5f;
+            }
+            else if (type == "Roche") {
+                if (typeAttaque == "Eau" || typeAttaque == "Plante" || typeAttaque == "Combat" || 
+                    typeAttaque == "Sol" || typeAttaque == "Acier") multiplicateur *= 2.0f;
+                if (typeAttaque == "Feu" || typeAttaque == "Vol" || typeAttaque == "Poison" || 
+                    typeAttaque == "Normal") multiplicateur *= 0.5f;
+            }
+            else if (type == "Spectre") {
+                if (typeAttaque == "Spectre" || typeAttaque == "Ténèbres") multiplicateur *= 2.0f;
+                if (typeAttaque == "Poison" || typeAttaque == "Insecte") multiplicateur *= 0.5f;
+            }
+            else if (type == "Dragon") {
+                if (typeAttaque == "Glace" || typeAttaque == "Dragon" || typeAttaque == "Fée") multiplicateur *= 2.0f;
+                if (typeAttaque == "Feu" || typeAttaque == "Eau" || typeAttaque == "Électrik" || typeAttaque == "Plante") multiplicateur *= 0.5f;
+            }
+            else if (type == "Ténèbres") {
+                if (typeAttaque == "Combat" || typeAttaque == "Insecte" || typeAttaque == "Fée") multiplicateur *= 2.0f;
+                if (typeAttaque == "Spectre" || typeAttaque == "Psy" || typeAttaque == "Ténèbres") multiplicateur *= 0.5f;
+            }
+            else if (type == "Acier") {
+                if (typeAttaque == "Feu" || typeAttaque == "Combat" || typeAttaque == "Sol") multiplicateur *= 2.0f;
+                if (typeAttaque == "Normal" || typeAttaque == "Plante" || typeAttaque == "Glace" || 
+                    typeAttaque == "Vol" || typeAttaque == "Psy" || typeAttaque == "Insecte" || 
+                    typeAttaque == "Roche" || typeAttaque == "Dragon" || typeAttaque == "Acier" || 
+                    typeAttaque == "Fée") multiplicateur *= 0.5f;
+            }
+            else if (type == "Fée") {
+                if (typeAttaque == "Poison" || typeAttaque == "Acier") multiplicateur *= 2.0f;
+                if (typeAttaque == "Combat" || typeAttaque == "Insecte" || typeAttaque == "Ténèbres" || 
+                    typeAttaque == "Dragon") multiplicateur *= 0.5f;
+            }            
         }
         
         return multiplicateur;
@@ -145,18 +204,45 @@ public:
         
         return degatsFinaux;
     }
+    
+    #include <iomanip> // pour std::setw
 
+    int largeurVisible(const std::string& s) const {
+        int count = 0;
+        for (size_t i = 0; i < s.size(); ++i) {
+            if ((s[i] & 0xC0) != 0x80) {  // New UTF-8 character (not continuation byte)
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    
     string afficherInfos() const {
         stringstream ss;
-        ss << "Nom: " << nom << " | Types: ";
-        for (size_t i = 0; i < types.size(); ++i) {
-            ss << types[i];
-            if (i < types.size() - 1) ss << ", ";
-        }
+        ss << std::left;
+    
+        ss << std::setw(4) << (to_string(numPokedex) + ".");
+        
+        // Align manually using visual width instead of setw
+        string nomLabel = "Nom: ";
+        int nomWidth = 15;
+        int padNom = nomWidth - largeurVisible(nom);
+        ss << nomLabel << nom << string(padNom > 0 ? padNom : 0, ' ');
+    
+        ss << " | Types: ";
+        string types = type1 + (type2.empty() ? "" : " " + type2);
+        int typeWidth = 16;
+        int padType = typeWidth - largeurVisible(types);
+        ss << types << string(padType > 0 ? padType : 0, ' ');
+    
         ss << " | Attaque: " << nomAttaque << " (" << degatsAttaque << " dégâts)";
+        
         return ss.str();
     }
-
+    
+    
+    
     virtual string interagir() const {
         return "Le Pokémon " + nom + " semble heureux de vous voir!";
     }
@@ -165,9 +251,9 @@ public:
 // Classes dérivées pour chaque type de Pokémon
 class PokemonFeu : public Pokemon {
 public:
-    PokemonFeu(const string& nom, const vector<string>& types, 
+    PokemonFeu(const string& nom, const string& type1, const string& type2, 
                int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
-        : Pokemon(nom, types, hp, nomAttaque, degatsAttaque, numPokedex) {}
+        : Pokemon(nom, type1, type2, hp, nomAttaque, degatsAttaque, numPokedex) {}
 
     virtual string interagir() const {
         return "Le Pokémon " + nom + " crache quelques flammes joyeusement!";
@@ -176,9 +262,9 @@ public:
 
 class PokemonEau : public Pokemon {
 public:
-    PokemonEau(const string& nom, const vector<string>& types, 
+    PokemonEau(const string& nom, const string& type1, const string& type2, 
                int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
-        : Pokemon(nom, types, hp, nomAttaque, degatsAttaque, numPokedex) {}
+        : Pokemon(nom, type1, type2, hp, nomAttaque, degatsAttaque, numPokedex) {}
 
     virtual string interagir() const {
         return "Le Pokémon " + nom + " fait des bulles et vous éclabousse!";
@@ -187,9 +273,9 @@ public:
 
 class PokemonPlante : public Pokemon {
 public:
-    PokemonPlante(const string& nom, const vector<string>& types, 
+    PokemonPlante(const string& nom, const string& type1, const string& type2, 
                  int hp, const string& nomAttaque, int degatsAttaque, int numPokedex)
-        : Pokemon(nom, types, hp, nomAttaque, degatsAttaque, numPokedex) {}
+        : Pokemon(nom, type1, type2, hp, nomAttaque, degatsAttaque, numPokedex) {}
 
     virtual string interagir() const {
         return "Le Pokémon " + nom + " fait pousser une petite fleur près de vous!";
@@ -276,7 +362,7 @@ public:
     void afficherEquipe() const {
         cout << "Équipe de " << nom << ":" << endl;
         for (size_t i = 0; i < equipe.size(); ++i) {
-            cout << i + 1 << ". " << equipe[i]->afficherInfos() << endl;
+            cout << equipe[i]->afficherInfos() << endl;
             afficheHp(equipe[i]->getHp(),equipe[i]->getHpMax());
             print_pokemon(equipe[i]->getNumPokedex());
         }
@@ -404,25 +490,7 @@ int getRandomNumber(int min, int max) {
 vector<shared_ptr<Pokemon> > chargerPokemonDepuisCSV(const string& filename) {
     vector<shared_ptr<Pokemon> > pokemons;
     ifstream file(filename.c_str());  // C-style string for older compilers
-    
-    if (!file.is_open()) {
-        cout << "Impossible d'ouvrir le fichier " << filename << endl;
-        // Créer quelques Pokémon par défaut
-        vector<string> typeFeu;
-        typeFeu.push_back("Feu");
-        pokemons.push_back(make_shared<PokemonFeu>("Salamèche", typeFeu, 39, "Flammèche", 70,2));
-        
-        vector<string> typeEau;
-        typeEau.push_back("Eau");
-        pokemons.push_back(make_shared<PokemonEau>("Carapuce", typeEau, 44, "Pistolet à O", 65,6));
-        
-        vector<string> typePlante;
-        typePlante.push_back("Plante");
-        typePlante.push_back("Poison");
-        pokemons.push_back(make_shared<PokemonPlante>("Bulbizarre", typePlante, 45, "Fouet Lianes", 60,7));
-        return pokemons;
-    }
-    
+
     string line;
     // Ignorer la première ligne (en-têtes)
     getline(file, line);
@@ -431,79 +499,34 @@ vector<shared_ptr<Pokemon> > chargerPokemonDepuisCSV(const string& filename) {
 
     while (getline(file, line)) {
         stringstream ss(line);
-        string nom, typesStr, type2, hpStr, nomAttaque, degatsAttaqueStr, numPokedex;
+        string nom, type1, type2, hpStr, nomAttaque, degatsAttaqueStr, numPokedex;
         
         getline(ss, nom, ',');
-        getline(ss, typesStr, ',');
+        getline(ss, type1, ',');
         getline(ss, type2, ',');
         getline(ss, hpStr, ',');
         getline(ss, nomAttaque, ',');
         getline(ss, degatsAttaqueStr, ',');
         int numPokedexInt = count;
-        
-        // Convertir les types en vector
-        vector<string> types;
-        stringstream typesStream(typesStr);
-        string type;
-        while (getline(typesStream, type, '|')) {
-            types.push_back(type);
-        }
-        
+                
         int hp = atoi(hpStr.c_str());
         int degatsAttaque = atoi(degatsAttaqueStr.c_str());
-        
-        // Créer le Pokémon approprié basé sur son type principal
-        if (!types.empty()) {
-            if (types[0] == "Feu") {
-                pokemons.push_back(make_shared<PokemonFeu>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
-            } else if (types[0] == "Eau") {
-                pokemons.push_back(make_shared<PokemonEau>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
-            } else if (types[0] == "Plante") {
-                pokemons.push_back(make_shared<PokemonPlante>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
-            } else {
-                // Type générique
-                pokemons.push_back(make_shared<Pokemon>(nom, types, hp, nomAttaque, degatsAttaque, numPokedexInt));
-            }
-            count+=1;
+                
+        if (type1 == "Feu") {
+            pokemons.push_back(make_shared<PokemonFeu>(nom, type1,type2, hp, nomAttaque, degatsAttaque, numPokedexInt));
+        } else if (type1 == "Eau") {
+            pokemons.push_back(make_shared<PokemonEau>(nom, type1,type2, hp, nomAttaque, degatsAttaque, numPokedexInt));
+        } else if (type1 == "Plante") {
+            pokemons.push_back(make_shared<PokemonPlante>(nom, type1,type2, hp, nomAttaque, degatsAttaque, numPokedexInt));
+        } else {
+            pokemons.push_back(make_shared<Pokemon>(nom, type1,type2, hp, nomAttaque, degatsAttaque, numPokedexInt));
         }
+        count+=1;
     }
     
     file.close();
     return pokemons;
 }
-    /*
-    if (!file.is_open()) {
-        cout << "Impossible d'ouvrir le fichier " << filename << endl;
-        // Créer quelques leaders par défaut
-        shared_ptr<LeaderGym> leader1(new LeaderGym("Pierre", "Roche", "Argenta"));
-        vector<string> typeRoche;
-        typeRoche.push_back("Roche");
-        leader1->ajouterPokemon(make_shared<Pokemon>("Racaillou", typeRoche, 40, "Jet-Pierres", 60));
-        
-        shared_ptr<LeaderGym> leader2(new LeaderGym("Ondine", "Cascade", "Azuria"));
-        vector<string> typeEauPsy;
-        typeEauPsy.push_back("Eau");
-        typeEauPsy.push_back("Psy");
-        leader2->ajouterPokemon(make_shared<PokemonEau>("Staross", typeEauPsy, 45, "Hydrocanon", 75));
-        
-        shared_ptr<LeaderGym> leader3(new LeaderGym("Major Bob", "Tonnerre", "Carmin sur Mer"));
-        vector<string> typeElectrik;
-        typeElectrik.push_back("Électrik");
-        leader3->ajouterPokemon(make_shared<Pokemon>("Pikachu", typeElectrik, 35, "Éclair", 65));
-        
-        shared_ptr<LeaderGym> leader4(new LeaderGym("Erika", "Arc-en-ciel", "Céladopole"));
-        vector<string> typePlante;
-        typePlante.push_back("Plante");
-        typePlante.push_back("Poison");
-        leader4->ajouterPokemon(make_shared<PokemonPlante>("Herbizarre", typePlante, 50, "Tranch'Herbe", 70));
-        
-        leaders.push_back(leader1);
-        leaders.push_back(leader2);
-        leaders.push_back(leader3);
-        leaders.push_back(leader4);
-        return leaders;
-    }*/
-
 
 shared_ptr<Joueur>  chargerJoueurDepuisCSV(const string& filename, const vector<shared_ptr<Pokemon> >& tousLesPokemon) {
     shared_ptr<Joueur> joueur;
@@ -577,8 +600,6 @@ vector<shared_ptr<LeaderGym> > chargerLeadersDepuisCSV(const string& filename, c
     file.close();
     return leaders;
 }
-
-
 
 // Fonction pour charger les maîtres Pokémon à partir d'un fichier CSV
 vector<shared_ptr<MaitrePokemon> > chargerMaitresDepuisCSV(const string& filename, const vector<shared_ptr<Pokemon> >& tousLesPokemon) {
@@ -862,7 +883,7 @@ void menuPrincipal(shared_ptr<Joueur> joueur,
             }
             case 6: {
                 // Affronter un Maître Pokémon (seulement si tous les badges sont obtenus)
-                //if (joueur->getBadges() >= 4) {  // Minimum 4 badges requis HERE
+                if (joueur->getBadges() >= 4)   // Minimum 4 badges requis HERE
                 {
                     // Choisir un maître au hasard
                     if (!maitres.empty()) {
@@ -887,8 +908,9 @@ void menuPrincipal(shared_ptr<Joueur> joueur,
                     } else {
                         cout << "Aucun Maître Pokémon disponible!" << endl;
                     }
-                //} else { HERE
-                //    cout << "Vous devez obtenir au moins 4 badges avant de pouvoir affronter un Maître Pokémon!" << endl;
+                } 
+                else {
+                    cout << "Vous devez obtenir au moins 4 badges avant de pouvoir affronter un Maître Pokémon!" << endl;
                 }
                 break;
             }
@@ -950,11 +972,11 @@ void menuPrincipal(shared_ptr<Joueur> joueur,
 
 shared_ptr<Joueur> CreateJoueur(string filename, vector<shared_ptr<Pokemon> > tousLesPokemon)
 {
-    shared_ptr<Joueur> joueur;  // Déclaré ici pour être visible à la fin
+    shared_ptr<Joueur> joueur;
 
     string rep;
     do {
-        cout << "Voulez vous jouer vous meme (M) ou jouer avec un joueur pre-cree (P): ";
+        cout << "Voulez-vous jouer vous-même (M) ou jouer avec un joueur pré-créé (P) : ";
         cin >> rep;
     } while (rep != "M" && rep != "P");
 
@@ -962,80 +984,50 @@ shared_ptr<Joueur> CreateJoueur(string filename, vector<shared_ptr<Pokemon> > to
         joueur = chargerJoueurDepuisCSV(filename, tousLesPokemon);
     } else {
         string nomJoueur;
-        cin.ignore(); // Important pour ignorer le '\n' après cin >> rep
-        cout << "Entrez votre nom: ";
+        cin.ignore(); // Important après cin >> rep
+        cout << "Entrez votre nom : ";
         getline(cin, nomJoueur);
 
-        joueur = shared_ptr<Joueur>(new Joueur(nomJoueur));
+        joueur = make_shared<Joueur>(nomJoueur);
 
-        cout << "\nChoisissez vos Pokémon de départ:" << endl;
+        cout << "\nChoisissez vos Pokémon de départ :" << endl;
         for (size_t i = 0; i < tousLesPokemon.size(); ++i) {
-            cout << i + 1 << ". " << tousLesPokemon[i]->afficherInfos() << endl;
+            cout << tousLesPokemon[i]->afficherInfos() << endl;
         }
 
-        for (int i = 0; i < 3; ++i) {
-            cout << "\nChoisissez votre Pokémon #" << i + 1 << " (1-" << tousLesPokemon.size() << "): ";
+        int numPok = 2;
+        do {
+            cout << "Combien de Pokémon voulez-vous dans votre équipe ? (Entre 2 et 6) : ";
+            cin >> numPok;
+        } while (numPok < 2 || numPok > 6);
+
+        for (int i = 0; i < numPok; ++i) {
             int choix;
-            cin >> choix;
+            do {
+                cout << "\nChoisissez votre Pokémon #" << i + 1 << " (1-" << tousLesPokemon.size() << ") : ";
+                cin >> choix;
+            } while (choix < 1 || choix > (int)tousLesPokemon.size());
 
-            if (choix > 0 && choix <= (int)tousLesPokemon.size()) {
-                Pokemon* selected = tousLesPokemon[choix - 1].get();
-                const vector<string>& types = selected->getTypes();
-                Pokemon* newPokemon = NULL;
+            shared_ptr<Pokemon> selected = tousLesPokemon[choix - 1];
 
-                if (!types.empty()) {
-                    if (types[0] == "Feu") {
-                        newPokemon = new PokemonFeu(
-                            selected->getNom(),
-                            selected->getTypes(),
-                            selected->getHpMax(),
-                            selected->getNomAttaque(),
-                            selected->getDegatsAttaque(),
-                            selected->getNumPokedex()
-                        );
-                    } else if (types[0] == "Eau") {
-                        newPokemon = new PokemonEau(
-                            selected->getNom(),
-                            selected->getTypes(),
-                            selected->getHpMax(),
-                            selected->getNomAttaque(),
-                            selected->getDegatsAttaque(),
-                            selected->getNumPokedex()
-                        );
-                    } else if (types[0] == "Plante") {
-                        newPokemon = new PokemonPlante(
-                            selected->getNom(),
-                            selected->getTypes(),
-                            selected->getHpMax(),
-                            selected->getNomAttaque(),
-                            selected->getDegatsAttaque(),
-                            selected->getNumPokedex()
-                        );
-                    } else {
-                        newPokemon = new Pokemon(
-                            selected->getNom(),
-                            selected->getTypes(),
-                            selected->getHpMax(),
-                            selected->getNomAttaque(),
-                            selected->getDegatsAttaque(),
-                            selected->getNumPokedex()
-                        );
-                    }
-                }
+            shared_ptr<Pokemon> newPokemon = make_shared<Pokemon>(
+                selected->getNom(),
+                selected->getType1(),  // Add this line
+                selected->getType2(),  // Add this line
+                selected->getHpMax(),
+                selected->getNomAttaque(),
+                selected->getDegatsAttaque(),
+                selected->getNumPokedex()
+            );
 
-                if (newPokemon != NULL) {
-                    joueur->ajouterPokemon(shared_ptr<Pokemon>(newPokemon));
-                    cout << selected->getNom() << " a été ajouté à votre équipe!" << endl;
-                }
-            } else {
-                cout << "Choix invalide. Réessayez." << endl;
-                i--;
-            }
+            joueur->ajouterPokemon(newPokemon);
+            cout << selected->getNom() << " a été ajouté à votre équipe !" << endl;
         }
     }
 
     return joueur;
 }
+
 
 int main() {
     system("clear");
